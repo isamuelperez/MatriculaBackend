@@ -16,7 +16,7 @@ namespace Matricula.Domain.Entities
 
     public class User
     {
-        public virtual long Id { get; private set; }
+        public virtual int Id { get; private set; }
         public virtual string? Email { get; set; }
         public virtual string? Password { get; set; }
         public virtual string? Rol { get; set; }

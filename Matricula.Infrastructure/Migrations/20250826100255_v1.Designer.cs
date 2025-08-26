@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Matricula.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250826004612_init")]
-    partial class init
+    [Migration("20250826100255_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,29 +77,25 @@ namespace Matricula.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Identification")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Programa")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Rol")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Identification")
                         .IsUnique()
                         .HasFilter("[Identification] IS NOT NULL");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Students");
                 });
@@ -140,13 +136,35 @@ namespace Matricula.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Identification")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Identification")
+                        .IsUnique()
+                        .HasFilter("[Identification] IS NOT NULL");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Teachers");
+                });
+
+            modelBuilder.Entity("Matricula.Domain.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
@@ -157,11 +175,7 @@ namespace Matricula.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Identification")
-                        .IsUnique()
-                        .HasFilter("[Identification] IS NOT NULL");
-
-                    b.ToTable("Teachers");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Matricula.Domain.Entities.MateriaTeacher", b =>
@@ -181,6 +195,15 @@ namespace Matricula.Infrastructure.Migrations
                     b.Navigation("Materia");
 
                     b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("Matricula.Domain.Entities.Student", b =>
+                {
+                    b.HasOne("Matricula.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Matricula.Domain.Entities.StudentMateria", b =>
@@ -208,6 +231,15 @@ namespace Matricula.Infrastructure.Migrations
                     b.Navigation("Student");
 
                     b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("Matricula.Domain.Entities.Teacher", b =>
+                {
+                    b.HasOne("Matricula.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Matricula.Domain.Entities.Materia", b =>

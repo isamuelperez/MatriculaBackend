@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Matricula.Application\Matricula.Application.csproj" />
     <ProjectReference Include="..\Matricula.Infrastructure\Matricula.Infrastructure.csproj" />
   </ItemGroup>
 
