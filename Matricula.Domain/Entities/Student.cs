@@ -11,6 +11,6 @@ namespace Matricula.Domain.Entities
         public string ? Programa { get; set; }
         public override string ? Rol { get; set; } = "Estudiante";
 
-        public ICollection<StudentMateria>? EstudianteMaterias { get; set; }
+        public ICollection<StudentMateria>? StudentMaterias { get; set; }
     }
 }
