@@ -8,7 +8,6 @@ namespace Matricula.Domain.Entities
 {
     public class Teacher : Person
     {
-        public override string? Rol { get; set; } = "Profesor";
         public ICollection<MateriaTeacher>? MateriasAssigned { get; set; }
     }
 }

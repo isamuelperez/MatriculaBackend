@@ -17,6 +17,7 @@ namespace Matricula.Infrastructure.DataBase
         public DbSet<Materia> Materias { get; set; }
         public DbSet<MateriaTeacher> MateriaTeachers { get; set; }
         public DbSet<StudentMateria> StudentMaterias { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,6 +53,8 @@ namespace Matricula.Infrastructure.DataBase
                 .HasOne(em => em.Teacher)
                 .WithMany()
                 .HasForeignKey(em => em.TeacherId);
+
+            modelBuilder.Entity<User>().HasKey(u => u.Id);
         }
     }
 }

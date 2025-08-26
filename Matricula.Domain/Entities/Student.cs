@@ -9,8 +9,6 @@ namespace Matricula.Domain.Entities
     public class Student : Person
     {
         public string ? Programa { get; set; }
-        public override string ? Rol { get; set; } = "Estudiante";
-
         public ICollection<StudentMateria>? StudentMaterias { get; set; }
     }
 }
