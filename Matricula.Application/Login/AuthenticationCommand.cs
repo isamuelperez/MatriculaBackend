@@ -34,7 +34,7 @@ namespace Matricula.Application.Login
             response.UserId = user.Id;
             response.Rol = user.Rol;
             response.Token = _jwtService.GetToken(user);
-            return new Response<AuthenticationResponse>("Se consultó correctamente.", response);
+            return new Response<AuthenticationResponse>("Se Inicio Sesíon.", 200, response);
 
 
         }

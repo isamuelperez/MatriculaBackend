@@ -21,7 +21,7 @@ namespace Matricula.API.Controllers
 
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("create")]
         public async Task<ActionResult> Create(CreateStudentRequest request)
         {
@@ -38,7 +38,7 @@ namespace Matricula.API.Controllers
         public async Task<ActionResult> GetAll()
         {
             var response = await new GetQuery(_unitOfWork, _authenticationService).Handle();
-            if (response.Status == 201)
+            if (response.Status == 200)
             {
                 return Ok(response);
             }

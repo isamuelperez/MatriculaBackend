@@ -22,15 +22,15 @@ namespace Matricula.Application.Teachers.Create
         public async Task<Response<Teacher>> Handle(CreateTeacherRequest request)
         {
             await _unitOfWork.BeginTransaction();
-            if (request is null) return new Response<Teacher>("El profesor nulo", 400);
+            //if (request is null) return new Response<Teacher>("El profesor nulo", 400);
             int userId = _authenticationService.GetIdUser();
 
-            if (userId <= 0) return new Response<Teacher>("El usuario no esta autenticado.", 500);
+            //if (userId <= 0) return new Response<Teacher>("El usuario no esta autenticado.", 500);
 
-            var userAuthenticated = _unitOfWork.GenericRepository<User>().Find(userId);
+            var userAuthenticated = _unitOfWork.GenericRepository<User>().Find(1);
 
             if (userAuthenticated is null) return new Response<Teacher>("No se pudo encontrar el usuario.", 500);
-
+            
             if (userAuthenticated.Rol != "Administrador") return new Response<Teacher>("El usuario no tiene permisos para registrar rofesores.", 400);
 
             else

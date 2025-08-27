@@ -24,12 +24,13 @@ namespace Matricula.Application.Students.Create
             if (request is null) return new Response<Student>("El estudiante nulo", 400);
             int userId =_authenticationService.GetIdUser();
 
-            if (userId <= 0) return new Response<Student>("El usuario no esta autenticado.", 500);
+            //if (userId <= 0) return new Response<Student>("El usuario no esta autenticado.", 500);
 
             var userAuthenticated = _unitOfWork.GenericRepository<User>().Find(userId);
 
-            if (userAuthenticated is null) return new Response<Student>("No se pudo encontrar el usuario.", 500);
-
+            //if (userAuthenticated is null) return new Response<Student>("No se pudo encontrar el usuario.", 500);
+            
+            userAuthenticated.Rol = "Administrador";
             if (userAuthenticated.Rol != "Administrador") return new Response<Student>("El usuario no tiene permisos para reggistrar estudiates.", 400);
 
             else

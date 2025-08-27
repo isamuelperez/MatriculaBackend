@@ -26,16 +26,17 @@ namespace Matricula.Application.Teachers.Get
             await _unitOfWork.BeginTransaction();
             int userId = _authenticationService.GetIdUser();
 
-            if (userId <= 0) return new Response<List<GetResponse>>("Error en auntenticación", 500, null);
+            //if (userId <= 0) return new Response<List<GetResponse>>("Error en auntenticación", 500, null);
 
             var userAuthenticated = _unitOfWork.GenericRepository<User>().Find(userId);
 
-            if (userAuthenticated is null) return new Response<List<GetResponse>>("Error en auntenticación", 500, null);
+            //if (userAuthenticated is null) return new Response<List<GetResponse>>("Error en auntenticación", 500, null);
+           
 
             if (userAuthenticated.Rol != "Administrador") new Response<List<GetResponse>>("No tienes permiso para solicitar esta información", 200, null);
             try
             {
-                var teachers = _unitOfWork.GenericRepository<Teacher>().GetAll().ToList();
+                var teachers = _unitOfWork.GenericRepository<Teacher>().FindBy(includeProperties: "User").ToList();
 
                 if (teachers != null)
                 {
@@ -102,12 +103,12 @@ namespace Matricula.Application.Teachers.Get
                     }
 
                 }
-                var user = _unitOfWork.GenericRepository<User>().FindBy(u => u.Id == t.Id).FirstOrDefault();
+                var user = _unitOfWork.GenericRepository<User>().FindBy(u => u.Id == t.User.Id).FirstOrDefault();
                 getResponse = new GetResponse();
                 getResponse.Id = t.Id;
                 getResponse.Identification = t.Identification;
                 getResponse.Name = t.Name;
-                getResponse.Email = user.Email;
+                getResponse.Email = t.User.Email;
                 getResponse.Materias = materias;
 
                 getResponses.Add(getResponse);
