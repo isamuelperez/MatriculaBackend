@@ -21,17 +21,8 @@ namespace Matricula.Application.Students.Create
         public async Task<Response<Student>> Handle(CreateStudentRequest request)
         {
             await _unitOfWork.BeginTransaction();
-            if (request is null) return new Response<Student>("El estudiante nulo", 400);
-            int userId =_authenticationService.GetIdUser();
-
-            //if (userId <= 0) return new Response<Student>("El usuario no esta autenticado.", 500);
-
-            var userAuthenticated = _unitOfWork.GenericRepository<User>().Find(userId);
-
-            //if (userAuthenticated is null) return new Response<Student>("No se pudo encontrar el usuario.", 500);
             
-            userAuthenticated.Rol = "Administrador";
-            if (userAuthenticated.Rol != "Administrador") return new Response<Student>("El usuario no tiene permisos para reggistrar estudiates.", 400);
+            if(1==2) return new Response<Student>($"Se creo correctamente el estudiante: ", 201);
 
             else
             {
@@ -42,6 +33,7 @@ namespace Matricula.Application.Students.Create
                     if (estudiante is null)
                     {
                         var userCreate = CreateUser(request);
+                        await _unitOfWork.BeginTransaction();
                         var estudianteCreate = _unitOfWork.GenericRepository<Student>().AddAndReturn(MapStudent(request, userCreate));
                         await _unitOfWork.Commit();
                         return new Response<Student>($"Se creo correctamente el estudiante: {estudianteCreate.Name}", 201);
@@ -59,8 +51,8 @@ namespace Matricula.Application.Students.Create
 
         private User CreateUser(CreateStudentRequest request)
         {
-           
             var userCreate = _unitOfWork.GenericRepository<User>().AddAndReturn(MapUser(request));
+            _unitOfWork.Commit();
             _unitOfWork.GenericRepository<User>().Max(u => u.Id);
   
             return userCreate;

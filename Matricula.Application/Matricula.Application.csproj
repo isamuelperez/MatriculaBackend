@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Matricula.Domain\Matricula.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MateriaTeachers\Get\" />
+  </ItemGroup>
+
 </Project>

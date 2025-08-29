@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Matricula.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250826100255_v1")]
+    [Migration("20250828081254_v1")]
     partial class v1
     {
         /// <inheritdoc />

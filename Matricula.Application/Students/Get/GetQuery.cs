@@ -25,29 +25,38 @@ namespace Matricula.Application.Students.Get
             await _unitOfWork.BeginTransaction();
             int userId = _authenticationService.GetIdUser();
 
-            //if (userId <= 0) return new Response<List<GetResponse>>("Error en auntenticación", 500, null);
+            if (userId <= 0) return new Response<List<GetResponse>>("Error en auntenticación", 500, null);
 
-            var userAuthenticated = new User();// _unitOfWork.GenericRepository<User>().Find(userId);
+            var userAuthenticated = _unitOfWork.GenericRepository<User>().Find(userId);
 
-            //if (userAuthenticated is null) return new Response<List<GetResponse>>("Error en auntenticación", 500, null);
-            userAuthenticated.Rol = "Administrador";
-            if (userAuthenticated.Rol != "Administrador") new Response<List<GetResponse>>("No tienes permiso para solicitar esta información", 200, null);
-            try
-            {
-                var students = _unitOfWork.GenericRepository<Student>().GetAll().ToList();
+            if (userAuthenticated is null) return new Response<List<GetResponse>>("Error en auntenticación", 500, null);
 
-                if (students != null)
+            if (userAuthenticated.Rol == "Administrador" || userAuthenticated.Rol =="Estudiante") {
+
+                try
                 {
-                    return new Response<List<GetResponse>>($"Estudiantes encontrados", 200, MapGetAllStudents(students));
-                }
+                    var students = _unitOfWork.GenericRepository<Student>().GetAll().ToList();
 
-                return new Response<List<GetResponse>>("No hay Estudiantes registrados", 200, null);
-            }
-            catch (Exception ex)
+                    if (students != null)
+                    {
+                        return new Response<List<GetResponse>>($"Estudiantes encontrados", 200, MapGetAllStudents(students));
+                    }
+
+                    return new Response<List<GetResponse>>("No hay Estudiantes registrados", 200, null);
+                }
+                catch (Exception ex)
+                {
+                    await _unitOfWork.Rollback();
+                    return new Response<List<GetResponse>>($"Error", 500);
+                }
+            }else if (userAuthenticated.Rol == "Estudiante")
             {
-                await _unitOfWork.Rollback();
-                return new Response<List<GetResponse>>($"Error", 500);
+                //var studiantesMaterias = StudentMateria(userId);
             }
+
+
+                return new Response<List<GetResponse>>("No tienes permiso para solicitar esta información", 500, null);
+           
 
         }
 
@@ -59,9 +68,14 @@ namespace Matricula.Application.Students.Get
             {
                 var studentsMaterias = _unitOfWork.GenericRepository<StudentMateria>().FindBy(s => s.StudentId == idStudent, includeProperties: "Materia,Student,Teacher").ToList();
 
-                if (studentsMaterias != null)
+                if (studentsMaterias.Count> 0)
                 {
                     return new Response<GetResponse>($"Estudiantes encontrados", 200, MapGetStudents(studentsMaterias));
+                }
+                else if(studentsMaterias.Count > 0)
+                {
+                    var student = _unitOfWork.GenericRepository<Student>().FindFirstOrDefault(e=>e.Id == idStudent);
+                    return new Response<GetResponse>($"Estudiantes encontrados", 200, MapStudent(student));
                 }
 
                 return new Response<GetResponse>("No hay Estudiantes registrados", 200, null);
@@ -147,6 +161,21 @@ namespace Matricula.Application.Students.Get
             return getResponse;
         }
 
+        private GetResponse MapStudent(Student student)
+        {
+
+            GetResponse getResponse = new GetResponse();
+    
+            var user = _unitOfWork.GenericRepository<User>().FindBy(u => u.Id == student.Id).FirstOrDefault();
+
+            getResponse.Id = student.Id;
+            getResponse.Identification = student.Identification;
+            getResponse.Name = student.Name;
+            getResponse.Email = user.Email;
+            getResponse.Programa = student.Programa;
+            getResponse.Materias = null;
+            return getResponse;
+        }
 
     }
 }

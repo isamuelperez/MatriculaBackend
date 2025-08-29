@@ -10,6 +10,7 @@ namespace Matricula.API.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TeacherController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -21,7 +22,6 @@ namespace Matricula.API.Controllers
 
         }
 
-        //[Authorize]
         [HttpPost("create")]
         public async Task<ActionResult> Create(CreateTeacherRequest request)
         {
@@ -33,7 +33,7 @@ namespace Matricula.API.Controllers
             return BadRequest(response);
         }
 
-        [Authorize]
+       
         [HttpGet("getAll")]
         public async Task<ActionResult> GetAll()
         {
@@ -45,7 +45,6 @@ namespace Matricula.API.Controllers
             return BadRequest(response);
         }
 
-        [Authorize]
         [HttpGet("get")]
         public async Task<ActionResult> Get(int id)
         {
